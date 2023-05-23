@@ -22,8 +22,7 @@ class User(AbstractUser):
             'Обязательное. 150 символов и менее.'
             'Буквы, цифры и @/./+/-/_ только.')
         ),
-        validators=[validate_username,
-                    validators.RegexValidator(r'^[\w.@+-\s]+$')],
+        validators=[validate_username, ],
         error_messages={
             'unique': _("Пользователь с таким username уже существует."),
         },
