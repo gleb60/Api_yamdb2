@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.core import validators
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -21,7 +22,8 @@ class User(AbstractUser):
             'Обязательное. 150 символов и менее.'
             'Буквы, цифры и @/./+/-/_ только.')
         ),
-        validators=[validate_username],
+        validators=[validate_username,
+                    validators.RegexValidator(r'^[\w.@+-\s]+$')],
         error_messages={
             'unique': _("Пользователь с таким username уже существует."),
         },
@@ -51,3 +53,12 @@ class User(AbstractUser):
         choices=ROLES,
         default=settings.USER
     )
+
+    class Meta(AbstractUser.Meta):
+        ordering = ['username']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['email', 'username'],
+                name='Только один пользователь на email.'
+            )
+        ]
