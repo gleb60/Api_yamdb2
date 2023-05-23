@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-from django.core import validators
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -53,6 +52,14 @@ class User(AbstractUser):
         default=settings.USER
     )
 
+    @property
+    def is_admin(self):
+        return self.role == settings.ADMIN
+
+    @property
+    def is_moderator(self):
+        return self.role == settings.MODERATOR
+
     class Meta(AbstractUser.Meta):
         ordering = ['username']
         constraints = [
@@ -61,3 +68,6 @@ class User(AbstractUser):
                 name='Только один пользователь на email.'
             )
         ]
+
+    def __str__(self):
+        return self.username
