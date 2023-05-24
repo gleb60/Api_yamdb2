@@ -11,6 +11,7 @@ class Review(models.Model):
     #     on_delete=models.CASCADE,
     #     related_name='reviews',
     #     verbose_name='Произведение',
+    #     unique=True
     # )
     author = models.ForeignKey(
         User,
@@ -57,6 +58,7 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
         related_name='comments',
         verbose_name='Отзыв',
+        unique=True
     )
     author = models.ForeignKey(
         User,
@@ -66,7 +68,8 @@ class Comment(models.Model):
     )
     text = models.TextField(
         verbose_name='Комментарий',
-        help_text='Напишите ваш комментарий'
+        help_text='Напишите ваш комментарий',
+        unique=True
     )
     pub_date = models.DateTimeField(
         verbose_name='Дата создания',
@@ -77,7 +80,7 @@ class Comment(models.Model):
         ordering = ('pub_date',)
         constraints = [
             models.UniqueConstraint(
-                fields=['review', 'text', 'author'],
+                fields=['review', 'text'],
                 name='unique_comment'
             )
         ]
