@@ -21,6 +21,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'reviews.apps.ReviewsConfig',
+    'api.apps.ApiConfig',
+    'users',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -53,7 +57,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'api_yamdb.wsgi.application'
-
+AUTH_USER_MODEL = 'users.User'
 
 # Database
 
@@ -101,3 +105,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
+
+USER = 'user'
+MODERATOR = 'moderator'
+ADMIN = 'admin'
