@@ -1,13 +1,16 @@
 from django.urls import include, path
-from rest_framework.routers import SimpleRouter
+from rest_framework import routers
 
-from .views import UserViewSet
+from .views import RegistrationView, UserViewSet, GetJwtToken
 
-router = SimpleRouter()
+app_name = 'users'
+
+router = routers.DefaultRouter()
 router.register('users', UserViewSet)
 
+
 urlpatterns = [
-    path('v1/auth/signup/', include(router.urls)),
-    path('v1/', include('djoser.urls')),
-    path('v1/', include('djoser.urls.jwt')),
+    path('auth/signup/', RegistrationView.as_view(), name='signup'),
+    path('auth/token/', GetJwtToken.as_view(), name='token'),
+    path('', include(router.urls)),
 ]
