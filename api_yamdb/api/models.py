@@ -5,7 +5,7 @@ User = get_user_model()
 
 
 class Category(models.Model):
-    name = models.CharField (max_length=256)
+    name = models.CharField(max_length=256)
     slug = models.SlugField(unique=True)
 
     def __str__(self):
@@ -25,13 +25,18 @@ class Title(models.Model):
     year = models.IntegerField()
     rating = models.IntegerField(null=True)
     description = models.TextField(null=True)
-    genre = models.ManyToManyField(Genre,
-                                   related_name='titles',)
-    category = models.ForeignKey(Category,
-                                 on_delete=models.SET_NULL,
-                                 related_name='titles',
-                                 null=True,
-                                 blank=True)
+# посмотреть achivments
+    genre = models.ManyToManyField(
+        Genre,
+        related_name='titles',
+    )
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.SET_NULL,
+        related_name='titles',
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return self.name

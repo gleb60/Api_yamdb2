@@ -15,7 +15,7 @@ class TitleViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     pagination_class = LimitOffsetPagination
     filter_backends = (filters.SearchFilter, DjangoFilterBackend,)
-    filterset_fields = ('category', 'genre', 'name', 'year') 
+    filterset_fields = ('category', 'genre', 'name', 'year',)
     search_fields = ('titles__name',)
 
     def get_serializer_class(self):

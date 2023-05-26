@@ -30,8 +30,11 @@ class TitleSerializer(serializers.ModelSerializer):
         """Проверяет, что год выпуска раньше текущего"""
         year = dt.date.today().year
         if (value < year):
-            raise serializers.ValidationError('Ошибка. Дата позднее текущей.')
+            raise serializers.ValidationError(
+                'Дата не может быть позднее текущей'
+            )
         return value
+
 
 class TitleWriteSerializer(serializers.ModelSerializer):
     genre = serializers.SlugRelatedField(
