@@ -7,18 +7,18 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('id', 'name', 'slug')
+        fields = ('name', 'slug')
 
 
 class GenreSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Genre
-        fields = ('id', 'name', 'slug')
+        fields = ('name', 'slug')
 
 
 class TitleSerializer(serializers.ModelSerializer):
-    genre = GenreSerializer(many=True)
+    genre = GenreSerializer(many=True, read_only=True)
     category = CategorySerializer()
 
     class Meta:
@@ -30,5 +30,13 @@ class TitleSerializer(serializers.ModelSerializer):
         """Проверяет, что год выпуска раньше текущего"""
         year = dt.date.today().year
         if (value < year):
-            raise serializers.ValidationError('Проверьте год выхода фильма!')
+            raise serializers.ValidationError('Ошибка. Дата позднее текущей.')
         return value
+
+class TitleWriteSerializer(serializers.ModelSerializer):
+    genre = serializers.SlugRelatedField(
+        slug_field='slug', many=True, queryset=Genre.objects.all()
+    )
+    category = serializers.SlugRelatedField(
+        slug_field='slug', queryset=Category.objects.all()
+    )
