@@ -6,11 +6,15 @@ from django.utils.translation import gettext_lazy as _
 from .validators import validate_username
 
 
-ROLES = (
-    ('settings.ADMIN', 'Администратор'),
-    ('settings.MODERATOR', 'Модератор'),
-    ('settings.USER', 'Пользователь')
-)
+ADMIN = 'admin'
+MODERATOR = 'moderator'
+USER = 'user'
+
+ROLES = [
+    (ADMIN, 'Администратор'),
+    (MODERATOR, 'Модератор'),
+    (USER, 'Пользователь'),
+]
 
 
 class User(AbstractUser):
@@ -49,7 +53,7 @@ class User(AbstractUser):
         'Права доступа',
         max_length=20,
         choices=ROLES,
-        default=settings.USER
+        default=USER
     )
     confirmation_code = models.CharField(
         'Код подтверждения',
