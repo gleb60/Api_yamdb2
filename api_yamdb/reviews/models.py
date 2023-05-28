@@ -8,7 +8,7 @@ class Category(models.Model):
     slug = models.SlugField(unique=True)
 
     def __str__(self):
-        return self.slug
+        return self.name
 
 
 class Genre(models.Model):
@@ -16,13 +16,13 @@ class Genre(models.Model):
     slug = models.SlugField(unique=True)
 
     def __str__(self):
-        return self.slug
+        return self.name
 
 
 class Title(models.Model):
     name = models.CharField(max_length=256)
     year = models.IntegerField()
-    rating = models.IntegerField(null=True)
+    rating = models.IntegerField(null=True, default=None)
     description = models.TextField(null=True)
     genre = models.ManyToManyField(Genre,
                                    through='GenreTitle',
@@ -36,9 +36,20 @@ class Title(models.Model):
     def __str__(self):
         return self.name
 
+
 class GenreTitle(models.Model):
-    genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
-    title = models.ForeignKey(Title, on_delete=models.CASCADE)
+    genre = models.ForeignKey(
+        Genre,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True
+    )
+    title = models.ForeignKey(
+        Title,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
         return f'{self.genre} {self.title}'

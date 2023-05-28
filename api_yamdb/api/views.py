@@ -9,7 +9,7 @@ from .serializers import (GenreSerializer,
                           TitleWriteSerializer)
 from .permissions import IsAdminOrReadOnly
 
-class TitleViewSet(viewsets.ModelViewSet):
+class TitleViewSet(viewsets.ModelViewSet): 
     queryset = Title.objects.all()
     serializer_class = TitleGetSerializer
     permission_classes = [IsAdminOrReadOnly]
