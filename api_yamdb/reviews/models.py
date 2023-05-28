@@ -29,7 +29,6 @@ class Title(models.Model):
                                    related_name='titles',)
     category = models.ForeignKey(Category,
                                  on_delete=models.SET_NULL,
-                                 related_name='titles',
                                  null=True,
                                  blank=True)
 
@@ -40,13 +39,13 @@ class Title(models.Model):
 class GenreTitle(models.Model):
     genre = models.ForeignKey(
         Genre,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         blank=True,
         null=True
     )
     title = models.ForeignKey(
         Title,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         blank=True,
         null=True
     )

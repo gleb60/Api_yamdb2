@@ -1,11 +1,12 @@
 from rest_framework import serializers
 import datetime as dt
-from reviews.models import Title, Category, Genre, GenreTitle
+from reviews.models import Title, Category, Genre
 
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
+        lookup_field = 'slug'
         fields = ('name', 'slug')
 
     def validate_slug(self, value):
@@ -19,6 +20,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
+        lookup_field = 'slug'
         fields = ('name', 'slug')
 
     def validate_slug(self, value):
@@ -30,7 +32,7 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class TitleGetSerializer(serializers.ModelSerializer):
-    genre = GenreSerializer(many=True, read_only=True)
+    genre = GenreSerializer(many=True)
     category = CategorySerializer()
 
     class Meta:
@@ -56,16 +58,6 @@ class TitleWriteSerializer(serializers.ModelSerializer):
         slug_field='slug', queryset=Category.objects.all()
     )
 
-    def create(self, validated_data):
-        if 'genre' not in self.initial_data:
-            title = Title.objects.create(**validated_data)
-            return title
-        else:
-            genre = validated_data.pop('genre')
-            title = Title.objects.create(**validated_data)
-            for genre in genre:
-                current_genre, status = Genre.objects.get_or_create(
-                    **genre)
-                GenreTitle.objects.create(
-                    genre=current_genre, title=title)
-            return title
+    class Meta:
+        model = Title
+        fields = ('__all__')
