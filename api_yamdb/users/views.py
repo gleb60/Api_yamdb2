@@ -1,17 +1,19 @@
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404
+from rest_framework import filters
 from rest_framework import status, viewsets
+from rest_framework.decorators import action
 from rest_framework.generics import CreateAPIView
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
-from django.shortcuts import get_object_or_404
 
 from .models import User
 from .permissions import IsAdminOrSuperuser
 from .serializers import (
-    UserRegistrationSerializer, UserSerializer, TokenSerializer
+    TokenSerializer, UserRegistrationSerializer, UserSerializer
 )
 
 
@@ -20,9 +22,30 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = (IsAdminOrSuperuser,)
     pagination_class = LimitOffsetPagination
+    lookup_field = 'username'
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('username',)
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+    @action(
+        methods=['GET', 'PATCH'],
+        detail=False,
+        permission_classes=[IsAuthenticated]
+    )
+    def me(self, request):
+        user = get_object_or_404(User, pk=request.user.pk)
+
+        if request.method == 'GET':
+            serializer = UserSerializer(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        if request.method == 'PATCH':
+            serializer = UserSerializer(user, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save(role=user.role)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class RegistrationView(CreateAPIView):
@@ -76,4 +99,3 @@ class GetJwtToken(CreateAPIView):
             {'confirmation_code': 'Неверный код подтверждения.'},
             status=status.HTTP_400_BAD_REQUEST,
         )
-

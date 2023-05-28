@@ -1,17 +1,7 @@
 import re
-from django.core.exceptions import ValidationError
-from django.core.validators import EmailValidator
-from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
-from rest_framework.validators import UniqueValidator
 
 from .models import User
-
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        fields = ('username', 'email')
-        model = User
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -22,31 +12,32 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         required=True,
         allow_null=False,
         allow_blank=False,
-        validators=[EmailValidator(), UniqueValidator(queryset=User.objects.all())]
     )
     username = serializers.CharField(
         max_length=150,
         required=True,
         allow_null=False,
         allow_blank=False,
-        validators=[
-            UniqueValidator(queryset=User.objects.all()),
-        ]
     )
 
     class Meta:
         model = User
         fields = ('username', 'email')
 
-    @staticmethod
-    def validate_username(username):
-        if username == 'me':
-            raise serializers.ValidationError(
-                "Имя 'me' зарезервировано."
-            )
-        if not re.match(r'^[a-zA-Z][\w+.@+-]{1,150}$', username):
-            raise ValidationError(_(f'{username} содержит недопустимые символы!'))
-        return username
+    def validate(self, data):
+        data = super().validate(data)
+        pattern = r'^[\w.@+-]+$'
+        email = data.get('email')
+        username = data.get('username')
+        if (not User.objects.filter(email=email, username=username).exists()
+                and any((User.objects.filter(email=email).exists(),
+                         User.objects.filter(username=username).exists()))):
+            raise serializers.ValidationError('Имя или почта заняты.')
+
+        if not re.match(pattern, username) or username == 'me':
+            raise serializers.ValidationError('Неверный формат username')
+
+        return data
 
 
 class TokenSerializer(serializers.ModelSerializer):
@@ -61,3 +52,10 @@ class TokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'confirmation_code')
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ('first_name', 'last_name', 'username', 'bio', 'email',
+                  'role')
+        model = User
