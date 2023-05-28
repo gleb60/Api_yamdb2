@@ -21,7 +21,7 @@ class User(AbstractUser):
             'Обязательное. 150 символов и менее.'
             'Буквы, цифры и @/./+/-/_ только.')
         ),
-        validators=[validate_username, ],
+        validators=[validate_username],
         error_messages={
             'unique': _("Пользователь с таким username уже существует."),
         },
@@ -51,6 +51,11 @@ class User(AbstractUser):
         choices=ROLES,
         default=settings.USER
     )
+    confirmation_code = models.CharField(
+        'Код подтверждения',
+        max_length=256,
+        blank=True
+    )
 
     @property
     def is_admin(self):
@@ -60,7 +65,7 @@ class User(AbstractUser):
     def is_moderator(self):
         return self.role == settings.MODERATOR
 
-    class Meta(AbstractUser.Meta):
+    class Meta:
         ordering = ['username']
         constraints = [
             models.UniqueConstraint(
