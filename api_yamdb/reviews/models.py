@@ -4,7 +4,7 @@ from users.models import User
 
 
 class Category(models.Model):
-    name = models.CharField (max_length=256)
+    name = models.CharField(max_length=256)
     slug = models.SlugField(unique=True)
 
     def __str__(self):
@@ -54,16 +54,15 @@ class GenreTitle(models.Model):
         return f'{self.genre} {self.title}'
 
 
-# The model of reviews to titles.
 class Review(models.Model):
 
-    # title = models.ForeignKey(
-    #     'Title',
-    #     on_delete=models.CASCADE,
-    #     related_name='reviews',
-    #     verbose_name='Произведение',
-    #     null=True
-    # )
+    title = models.ForeignKey(
+        'Title',
+        on_delete=models.CASCADE,
+        related_name='reviews',
+        verbose_name='Произведение',
+        null=True
+    )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -76,7 +75,7 @@ class Review(models.Model):
     score = models.PositiveSmallIntegerField(
         verbose_name='Рейтинг',
         validators=[
-            MinValueValidator(0, 'Минимальное значение 0'),
+            MinValueValidator(1, 'Минимальное значение 1'),
             MaxValueValidator(10, 'Максимальное значение 10')
         ]
     )
@@ -92,9 +91,14 @@ class Review(models.Model):
         ordering = ('pub_date', )
         verbose_name = 'Комментарий к произведению',
         verbose_name_plural = 'Комментарии к произведениям'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['title', 'author'],
+                name='unique_review'
+            ),
+        ]
 
 
-# The model of comments to reviews.
 class Comment(models.Model):
 
     review = models.ForeignKey(
@@ -111,7 +115,6 @@ class Comment(models.Model):
     )
     text = models.TextField(
         verbose_name='Комментарий',
-        help_text='write your comment'
     )
     pub_date = models.DateTimeField(
         verbose_name='Дата создания',
