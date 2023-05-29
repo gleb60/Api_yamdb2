@@ -1,3 +1,14 @@
+<<<<<<< HEAD
+=======
+# requests==2.26.0
+# Django==3.2
+# djangorestframework==3.12.4
+# PyJWT==2.1.0
+# pytest==6.2.4
+# pytest-django==4.4.0
+# pytest-pythonpath==0.7.3
+
+>>>>>>> c4fcf9e4b53156cd917e920f73a9e4bd940166ac
 asgiref==3.7.0
 attrs==23.1.0
 autopep8==2.0.2
