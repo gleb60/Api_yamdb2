@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from django.shortcuts import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from reviews.models import Comment, Genre, Category, Review, Title
@@ -75,3 +76,13 @@ class CommentViewSet(viewsets.ModelViewSet):
         review_id = self.kwargs.get('review_id')
         review = get_object_or_404(Review, id=review_id, title=title_id)
         serializer.save(author=self.request.user, review=review)
+=======
+from rest_framework import viewsets, generics
+from reviews.models import Review
+from .serializers import ReviewSerializer
+
+
+class ReviewViewSet(generics.ListCreateAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+>>>>>>> master

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from django.forms import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
@@ -69,6 +70,11 @@ class TitleWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Title
         fields = ('__all__')
+=======
+from rest_framework import serializers
+
+from reviews.models import Review, Comment
+>>>>>>> master
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -82,6 +88,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         slug_field='name'
     )
 
+<<<<<<< HEAD
     def validate(self, data):
         request = self.context['request']
         author = request.user
@@ -96,6 +103,11 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Review
+=======
+    class Meta:
+        field = '__all__'
+        models = Review
+>>>>>>> master
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -106,9 +118,21 @@ class CommentSerializer(serializers.ModelSerializer):
     )
     review = serializers.SlugRelatedField(
         read_only=True,
+<<<<<<< HEAD
+=======
+        slug_field='text',
+    )
+    text = serializers.SlugRelatedField(
+        read_only=True,
+>>>>>>> master
         slug_field='text'
     )
 
     class Meta:
+<<<<<<< HEAD
         fields = '__all__'
         model = Comment
+=======
+        field = '__all__'
+        models = Comment
+>>>>>>> master

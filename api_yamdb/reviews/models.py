@@ -70,7 +70,8 @@ class Review(models.Model):
         verbose_name='Автор'
     )
     text = models.TextField(
-        verbose_name='Отзыв'
+        verbose_name='Отзыв',
+        help_text='Напишите ваш отзыв'
     )
     score = models.PositiveSmallIntegerField(
         verbose_name='Рейтинг',
@@ -84,11 +85,17 @@ class Review(models.Model):
         auto_now_add=True
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.text[:20]
 
     class Meta:
         ordering = ('pub_date', )
+        # constraints = [
+        #     models.UniqueConstraint(
+        #         fields=['title', 'author'],
+        #         name='unique_review'
+        #     )
+        # ]
         verbose_name = 'Комментарий к произведению',
         verbose_name_plural = 'Комментарии к произведениям'
         constraints = [
@@ -106,6 +113,7 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
         related_name='comments',
         verbose_name='Отзыв',
+        unique=True
     )
     author = models.ForeignKey(
         User,
@@ -115,6 +123,7 @@ class Comment(models.Model):
     )
     text = models.TextField(
         verbose_name='Комментарий',
+        help_text='write your comment'
     )
     pub_date = models.DateTimeField(
         verbose_name='Дата создания',
@@ -123,5 +132,11 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ('pub_date',)
+        constraints = [
+            models.UniqueConstraint(
+                fields=['review', 'text'],
+                name='unique_comment'
+            )
+        ]
         verbose_name = 'Комментарий к отзыву',
         verbose_name_plural = 'Комментарии к отзыву'

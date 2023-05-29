@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from api.views import (
     CommentViewSet,
     ReviewViewSet,
@@ -20,4 +21,15 @@ v1_router.register(r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)'
 
 urlpatterns = [
     path('v1/', include(v1_router.urls)),
+=======
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
+from .views import ReviewViewSet
+
+router_v1 = DefaultRouter()
+router_v1.register(r'reviews', ReviewViewSet)
+
+urlpatterns = [
+    path('v1/', include(router_v1.urls))
+>>>>>>> master
 ]
