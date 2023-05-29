@@ -1,16 +1,15 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.pagination import LimitOffsetPagination
-from reviews.models import Comment, Genre, Category, Review, Title
-from rest_framework import viewsets
-from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
-from .mixins import CreateDestroyListViewSet
-from .serializers import (CommentSerializer, GenreSerializer,
-                          CategorySerializer, ReviewSerializer,
-                          TitleGetSerializer,
-                          TitleWriteSerializer)
-from .permissions import IsAdminModeratorOwnerOrReadOnly, IsAdminOrReadOnly
+from rest_framework import filters, viewsets
+from rest_framework.pagination import LimitOffsetPagination
+from reviews.models import Category, Comment, Genre, Review, Title
+
 from .filters import TitleFilter
+from .mixins import CreateDestroyListViewSet
+from .permissions import IsAdminModeratorOwnerOrReadOnly, IsAdminOrReadOnly
+from .serializers import (CategorySerializer, CommentSerializer,
+                          GenreSerializer, ReviewSerializer,
+                          TitleGetSerializer, TitleWriteSerializer)
 
 
 class TitleViewSet(viewsets.ModelViewSet):

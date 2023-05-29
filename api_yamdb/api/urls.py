@@ -1,10 +1,5 @@
-from api.views import (
-    CommentViewSet,
-    ReviewViewSet,
-    TitleViewSet,
-    CategoryViewSet,
-    GenreViewSet
-)
+from api.views import (CategoryViewSet, CommentViewSet, GenreViewSet,
+                       ReviewViewSet, TitleViewSet)
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 

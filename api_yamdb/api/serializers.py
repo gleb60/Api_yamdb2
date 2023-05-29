@@ -1,8 +1,10 @@
+import datetime as dt
+
+from django.db.models import Avg
 from django.forms import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-import datetime as dt
-from reviews.models import Comment, Review, Title, Category, Genre
+from reviews.models import Category, Comment, Genre, Review, Title
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -34,13 +36,20 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class TitleGetSerializer(serializers.ModelSerializer):
+    rating = serializers.SerializerMethodField()
     genre = GenreSerializer(many=True)
     category = CategorySerializer()
+
+    
 
     class Meta:
         model = Title
         fields = ('id', 'name', 'year', 'rating', 'description', 'genre',
                   'category')
+        
+    def get_rating(self, obj):
+        rating = obj.reviews.aggregate(Avg("score")).get("score__avg")
+        return rating
 
     def validate_year(self, value):
         """Проверяет, что год выпуска раньше текущего"""
