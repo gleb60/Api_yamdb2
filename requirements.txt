@@ -8,3 +8,5 @@ pytest-django==4.4.0
 pytest-pythonpath==0.7.3
 django-filter==23.2
 django-extensions==3.2.1
+python-dotenv==1.0.0
+
