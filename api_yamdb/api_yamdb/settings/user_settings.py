@@ -4,9 +4,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-SECRET_KEY = os.getenv('KEY')
+# Так, как без .env не проходят тесты яндекса:
 
-DEBUG = os.getenv('DEBUG')
+SECRET_KEY = os.getenv('KEY', '123456789')
+
+DEBUG = os.getenv('DEBUG', 'FALSE')
 
 ALLOWED_HOSTS = ['*']
 
