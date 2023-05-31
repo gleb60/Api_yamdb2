@@ -5,18 +5,17 @@ from django.utils.translation import gettext_lazy as _
 
 from .validators import validate_username
 
-ADMIN = 'admin'
-MODERATOR = 'moderator'
-USER = 'user'
-
-ROLES = [
-    (ADMIN, 'Администратор'),
-    (MODERATOR, 'Модератор'),
-    (USER, 'Пользователь'),
-]
-
 
 class User(AbstractUser):
+    ADMIN = 'admin'
+    MODERATOR = 'moderator'
+    USER = 'user'
+
+    ROLES = [
+        (ADMIN, 'Администратор'),
+        (MODERATOR, 'Модератор'),
+        (USER, 'Пользователь'),
+    ]
     username = models.CharField(
         max_length=150,
         unique=True,

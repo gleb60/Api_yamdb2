@@ -16,6 +16,9 @@ from .serializers import (TokenSerializer, UserRegistrationSerializer,
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    """
+    Получение, редактирование и удаление пользователя.
+    """
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = (IsAdminOrSuperuser,)
@@ -49,7 +52,10 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class RegistrationView(CreateAPIView):
-    """Регистрация пользователя"""
+    """
+    Регистрация пользователя
+    """
+
     permission_classes = [AllowAny, ]
     serializer_class = UserRegistrationSerializer
 
@@ -81,6 +87,9 @@ class RegistrationView(CreateAPIView):
 
 
 class GetJwtToken(CreateAPIView):
+    """
+    Получение токена.
+    """
     permission_classes = [AllowAny, ]
 
     def post(self, request, *args, **kwargs):
