@@ -13,26 +13,12 @@ class CategorySerializer(serializers.ModelSerializer):
         lookup_field = 'slug'
         fields = ('name', 'slug')
 
-    def validate_slug(self, value):
-        if self.instance and self.instance.slug == value:
-            return value
-        if Category.objects.filter(slug=value).exists():
-            raise serializers.ValidationError('Slug must be unique.')
-        return value
-
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
         lookup_field = 'slug'
         fields = ('name', 'slug')
-
-    def validate_slug(self, value):
-        if self.instance and self.instance.slug == value:
-            return value
-        if Genre.objects.filter(slug=value).exists():
-            raise serializers.ValidationError('Slug must be unique.')
-        return value
 
 
 class TitleGetSerializer(serializers.ModelSerializer):
@@ -46,13 +32,11 @@ class TitleGetSerializer(serializers.ModelSerializer):
                   'category')
 
     def get_rating(self, obj):
-        rating = obj.reviews.aggregate(Avg("score")).get("score__avg")
-        return rating
+        return obj.reviews.aggregate(Avg("score")).get("score__avg")
 
     def validate_year(self, value):
         """Проверяет, что год выпуска раньше текущего"""
-        year = dt.date.today().year
-        if (value < year):
+        if value < dt.date.today().year:
             raise serializers.ValidationError(
                 'Дата не может быть позднее текущей'
             )
@@ -69,11 +53,10 @@ class TitleWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Title
-        fields = ('__all__')
+        fields = '__all__'
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-
     author = serializers.SlugRelatedField(
         read_only=True,
         slug_field='username'
@@ -100,7 +83,6 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-
     author = serializers.SlugRelatedField(
         read_only=True,
         slug_field='username'

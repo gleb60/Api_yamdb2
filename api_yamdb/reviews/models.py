@@ -7,6 +7,10 @@ class Category(models.Model):
     name = models.CharField(max_length=256)
     slug = models.SlugField(unique=True)
 
+    class Meta:
+        verbose_name = 'Категория',
+        verbose_name_plural = 'Категории'
+
     def __str__(self):
         return self.name
 
@@ -15,22 +19,32 @@ class Genre(models.Model):
     name = models.CharField(max_length=256)
     slug = models.SlugField(unique=True)
 
+    class Meta:
+        verbose_name = 'Жанр',
+        verbose_name_plural = 'Жанры'
+
     def __str__(self):
         return self.name
 
 
 class Title(models.Model):
     name = models.CharField(max_length=256)
-    year = models.IntegerField()
+    year = models.IntegerField(db_index=True)
     rating = models.IntegerField(null=True, default=None)
     description = models.TextField(null=True)
     genre = models.ManyToManyField(Genre,
                                    through='GenreTitle',
-                                   related_name='titles',)
+                                   related_name='titles',
+                                   db_index=True)
     category = models.ForeignKey(Category,
                                  on_delete=models.SET_NULL,
                                  null=True,
-                                 blank=True)
+                                 blank=True,
+                                 db_index=True)
+
+    class Meta:
+        verbose_name = 'Произведение',
+        verbose_name_plural = 'Произведения'
 
     def __str__(self):
         return self.name
@@ -55,7 +69,6 @@ class GenreTitle(models.Model):
 
 
 class Review(models.Model):
-
     title = models.ForeignKey(
         'Title',
         on_delete=models.CASCADE,
@@ -84,9 +97,6 @@ class Review(models.Model):
         auto_now_add=True
     )
 
-    def __str__(self):
-        return self.text[:20]
-
     class Meta:
         ordering = ('pub_date', )
         verbose_name = 'Комментарий к произведению',
@@ -98,9 +108,11 @@ class Review(models.Model):
             ),
         ]
 
+    def __str__(self):
+        return self.text[:20]
+
 
 class Comment(models.Model):
-
     review = models.ForeignKey(
         'Review',
         on_delete=models.CASCADE,
